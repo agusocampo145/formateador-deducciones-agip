@@ -1,0 +1,10 @@
+<h2> Inserte la percepcion aqui : </h2>
+<input #inputPercepcion type="text" placeholder="Percepcion aqui">
+<button id="boton" (click)="percepcionSubmit(inputPercepcion.value,true,0)">En Formato</button>
+<button id="limpiar" (click)="limpiar()"> Limpiar lista </button>
+<h3>Percepciones en formato : </h3>
+<div id="percepcionesDisplay">
+</div>
+<div id="totalPer">
+</div>
+<button (click)="dynamicDownloadTxt()" >Descargar archivo .txt</button>
