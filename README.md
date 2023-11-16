@@ -3,7 +3,7 @@
 # AGIP - ANGULAR
 ## https://deduccionesagip.web.app/
 
-## Esta aplicacion web desarrollada con Angular, fue creada con el objetivo de facilitar una tarea mensual en el proceso de creacion de las declaraciones de Ingresos Brutos de Empresas que registran retenciones y/o percepciones en la ciudad de Buenos Aires 📝. 
+Esta aplicacion web desarrollada con Angular, fue creada con el objetivo de facilitar una tarea mensual en el proceso de creacion de las declaraciones de Ingresos Brutos de Empresas que registran retenciones y/o percepciones en la ciudad de Buenos Aires 📝. 
 
 Para registrar las retenciones y/o percepciones que se informan en la pagina de AGIP (*Administración Gubernamental de Ingresos Públicos*) en la declaracion de IIBB de AFIP (*Administración Federal de Ingresos Públicos*), se debia realizar una refactorizacion y transcripcion de los datos a mano, que resultaba muy tediosa y muy suceptible al error humano.
 
