@@ -1,5 +1,3 @@
-# Agip
-
 # AGIP - ANGULAR
 ## https://deduccionesagip.web.app/
 
