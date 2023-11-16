@@ -12,7 +12,7 @@ El funcionamiento consiste en insertar las retenciones/percepciones (solamente c
 El programa fue creado en una primera instancia con **Python**, pero para facilitar el uso publico del mismo, se translado a **Typescript** para poder ser incluido en la aplicacion web desarrollada con **Angular**, y publicado utilizando **Firebase**.
 
 *--Actualizacion mediados de 2023--* 
-La aplicacion fue creada a fines de 2021, y trasladada a Angular a principios de 2022.  A mediados de 2023, la pagina de AGIP actualizo su aplicacion web e incluyo esta misma feature a su apartado de retenciones / percepciones, pero desarrollado por su equipo, **este programa que realiza esta accion en la pagina oficial de AGIP, tiene el mismo objetivo que mi aplicacion mencionada pero no fue creada por mi, sino por el equipo de desarrolladores de AGIP**, *solo que se me ocurrio a mi primero jaja 😜*. 
+La aplicacion fue creada a fines de 2021, y trasladada a Angular a principios de 2022.  A mediados de 2023, la pagina de AGIP actualizo su aplicacion web e incluyo esta misma feature a su apartado de retenciones / percepciones, pero desarrollado por su equipo, **este programa que realiza esta accion en la pagina oficial de AGIP, tiene el mismo objetivo que mi aplicacion mencionada pero no fue creada por mi, sino por el equipo de desarrolladores de AGIP**, *solo que se me ocurrio a mi primero jaja* 😜. 
 
 Actualmente ya no la utilizo para la refactorizacion, pero si la utilizo mensualmente para obtener el total de los montos percibidos/retenidos, ya que la pagina de AGIP aún no provee esta informacion.
 
