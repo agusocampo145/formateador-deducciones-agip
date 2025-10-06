@@ -1,23 +1,58 @@
 # AGIP - ANGULAR
 ## https://deduccionesagip.web.app/
 
-Esta aplicacion web desarrollada con Angular, fue creada con el objetivo de facilitar una tarea mensual en el proceso de creacion de las declaraciones de Ingresos Brutos de Empresas que registran retenciones y/o percepciones en la ciudad de Buenos Aires 📝. 
+# 💼 Formateador de Deducciones AGIP  
 
-Para registrar las retenciones y/o percepciones que se informan en la pagina de AGIP (*Administración Gubernamental de Ingresos Públicos*) en la declaracion de IIBB de AFIP (*Administración Federal de Ingresos Públicos*), se debia realizar una refactorizacion y transcripcion de los datos a mano, que resultaba muy tediosa y muy suceptible al error humano.
+Aplicación web desarrollada con **Angular** para facilitar una tarea mensual en la generación de las **declaraciones de Ingresos Brutos (IIBB)** para empresas con **retenciones y/o percepciones** en la Ciudad de Buenos Aires 🧾.  
 
-Es **con el objetivo de facilitar esta tarea**, que cree este pequeño programa que realiza esta accion de manera automatica, facilitando el proceso y eliminando las posibilidades de errores 🤖.
+---
 
-El funcionamiento consiste en insertar las retenciones/percepciones (solamente copiandolas de la pagina de AGIP, sin ninguna modificacion necesaria) en su casilla correspondiente, y al momento de presionar el boton con la leyenda *'En formato',* las deducciones se mostraran con el formato solicitado por AFIP para poder registrarlas, sin necesidad de algun cambio posterior. Seleccionando el boton 'Descargar archivo .txt', se obtendra un archivo en el formato indicado listo para ser subido en la pagina de AFIP, para la declaracion de IIBB. La aplicacion tambien informa la suma total de los montos retenidos/percibidos para una mas facil lectura de los datos.
+## 🚀 Objetivo  
 
-El programa fue creado en una primera instancia con **Python**, pero para facilitar el uso publico del mismo, se translado a **Typescript** para poder ser incluido en la aplicacion web desarrollada con **Angular**, y publicado utilizando **Firebase**.
+Automatizar un proceso que antes se hacía manualmente:  
+copiar y reformatear los datos de retenciones y percepciones desde la web de **AGIP** para subirlos correctamente a la declaración de **AFIP** (Hoy ARCA).  
 
-*--Actualizacion mediados de 2023--* 
-La aplicacion fue creada a fines de 2021, y trasladada a Angular a principios de 2022.  A mediados de 2023, la pagina de AGIP actualizo su aplicacion web e incluyo esta misma feature a su apartado de retenciones / percepciones, pero desarrollado por su equipo, **este programa que realiza esta accion en la pagina oficial de AGIP, tiene el mismo objetivo que mi aplicacion mencionada pero no fue creada por mi, sino por el equipo de desarrolladores de AGIP**, *solo que se me ocurrio a mi primero jaja* 😜. 
+Este proceso solía ser tedioso, repetitivo y muy propenso a errores humanos 😅.  
+La aplicación resuelve este problema de forma automática, rápida y sin necesidad de modificaciones manuales.  
 
-Actualmente ya no la utilizo para la refactorizacion, pero si la utilizo mensualmente para obtener el total de los montos percibidos/retenidos, ya que la pagina de AGIP aún no provee esta informacion.
+---
 
-*Saludos Cordiales .-
-Agustin Ocampo :) 🐼*
+## ⚙️ Funcionamiento  
+
+1. Se copian los datos desde la web de **AGIP** (sin edición previa).  
+2. Al presionar **"En formato"**, las deducciones se convierten automáticamente al formato requerido por **AFIP**.  
+3. Con **"Descargar archivo .txt"**, se obtiene el archivo listo para importar en la declaración de IIBB.  
+4. La app también calcula y muestra el **total de montos retenidos/percibidos**, facilitando la verificación.  
+
+---
+
+## 🧠 Tecnologías utilizadas  
+
+- **Angular** (Frontend)  
+- **TypeScript**  
+- **Firebase Hosting**  
+- Versión original: **Python**, luego migrada a Angular para uso público  
+
+---
+
+## 📅 Historia del proyecto  
+
+- 🧩 Creado a fines de **2021** en **Python**.  
+- 🔄 Reescrito en **TypeScript / Angular** a comienzos de **2022** para hacerlo accesible desde la web.  
+- 💡 En **2023**, AGIP incorporó una función similar en su portal oficial (aunque yo llegué primero 😜).  
+- Actualmente aún la utilizo todos los meses para calcular **totales mensuales**, ya que la página oficial todavía no incluye esa función, y proyecto algunos cambios para mejorarla en algunos puntos que AGIP aún no implemento.  
+
+---
+
+## 💬 Autor  
+
+Desarrollado por **Agustín Ocampo** 🐼  
+📧 [oca_a@outlook.com.ar](mailto:oca_a@outlook.com.ar)  
+🔗 [LinkedIn](https://www.linkedin.com/in/agustin-ocampo-5684b8182/)  
+
+> Proyecto creado por necesidad, mantenido por pasión y compartido para ayudar 💡  
+
+---
 
 
 
