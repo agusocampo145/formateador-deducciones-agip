@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Validá archivos SIFERE de AGIP, calculá totales y corregí comprobantes repetidos." />
+    <title>AGIP a SIFERE | Validador de TXT</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Inicio">
+          <span class="brand-mark">A</span><span>AGIP <b>→</b> SIFERE</span>
+        </a>
+        <span class="privacy"><span class="privacy-dot"></span>Procesamiento local</span>
+      </header>
+
+      <section class="intro">
+        <p class="eyebrow">HERRAMIENTA PARA INGRESOS BRUTOS</p>
+        <h1>Prepará tu archivo SIFERE</h1>
+        <p class="lead">Importá el TXT descargado de AGIP. Revisamos el formato, calculamos el total y ordenamos comprobantes duplicados en cero.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="upload-title">
+        <div class="panel-heading">
+          <div><p class="eyebrow">PASO 1</p><h2 id="upload-title">Cargá el archivo</h2></div>
+          <span class="file-tag">.TXT</span>
+        </div>
+        <label class="dropzone" id="dropzone" for="file-input">
+          <span class="upload-icon" aria-hidden="true">↑</span>
+          <span class="drop-title">Arrastrá el archivo hasta acá</span>
+          <span class="drop-subtitle">o <span class="browse">elegilo desde tu dispositivo</span></span>
+          <span id="file-name" class="file-name">TXT de retenciones o percepciones SIFERE</span>
+          <input id="file-input" type="file" accept=".txt,text/plain" />
+        </label>
+        <div class="row-controls">
+          <label for="kind">Tipo de archivo</label>
+          <select id="kind">
+            <option value="auto">Detectar automáticamente</option>
+            <option value="retenciones">Retenciones</option>
+            <option value="percepciones">Percepciones</option>
+          </select>
+          <button id="process" class="button button-primary" type="button" disabled>Analizar archivo <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="privacy-note">El archivo se procesa en este navegador. No se envían datos ni credenciales a un servidor.</p>
+      </section>
+
+      <section id="error-box" class="message error" role="alert" hidden></section>
+
+      <section id="results" class="panel results" aria-live="polite" hidden>
+        <div class="panel-heading result-heading">
+          <div><p class="eyebrow">PASO 2</p><h2>Revisá el resultado</h2></div>
+          <span id="status-pill" class="status-pill">Listo para descargar</span>
+        </div>
+        <div class="stats">
+          <div class="stat"><span>Tipo</span><strong id="result-kind">—</strong></div>
+          <div class="stat"><span>Registros</span><strong id="result-count">0</strong></div>
+          <div class="stat"><span>Total</span><strong id="result-total">$ 0,00</strong></div>
+        </div>
+        <div id="duplicate-note" class="message info" hidden></div>
+        <div class="preview-head"><h3>Vista previa</h3><span>Primeros registros del archivo</span></div>
+        <pre id="preview" class="preview"></pre>
+        <button id="download" class="button button-primary download" type="button">Descargar TXT corregido <span aria-hidden="true">↓</span></button>
+      </section>
+
+      <footer class="footnote">
+        <span>Prepará el archivo, revisá el total y luego importalo en SIFERE Web.</span>
+        <span class="footnote-mark">AGIP / SIFERE</span>
+      </footer>
+    </main>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
