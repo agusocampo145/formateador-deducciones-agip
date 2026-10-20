@@ -41,7 +41,7 @@ test("reads AGIP retention amounts from the final 11-character field", () => {
     "90130-52532274-928/09/202640000000202600086848O 0000000000000000475400233240,00",
     "90130-65511804-330/09/202630000000000000000973O 0000000000000001543700231699,95",
     "90130-68731043-415/09/202640945688000000210258O 0000000000000000045500093949,24",
-  ].join("\\n");
+  ].join("\n");
   const result = processFile(sample);
   assert.equal(result.format, "retenciones");
   assert.deepEqual(result.records.map(({ cents }) => cents), [
