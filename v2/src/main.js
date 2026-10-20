@@ -74,10 +74,11 @@ processButton.addEventListener("click", async () => {
     document.querySelector("#result-count").textContent = currentResult.records.length.toLocaleString("es-AR");
     document.querySelector("#result-total").textContent = formatArs(currentResult.totalCents);
     const duplicateNote = document.querySelector("#duplicate-note");
+    const identifierName = currentResult.format === "retenciones" ? "certificado(s)" : "comprobante(s)";
     duplicateNote.hidden = currentResult.correctedCount === 0;
     duplicateNote.textContent = currentResult.correctedCount
-      ? `Se renumeraron ${currentResult.correctedCount} comprobante(s) repetido(s) que estaban en cero. Revisá la vista previa antes de descargar.`
-      : "No se encontraron comprobantes en cero repetidos para corregir.";
+      ? `Se renumeraron ${currentResult.correctedCount} ${identifierName} repetido(s) que estaban en cero. Revisá la vista previa antes de descargar.`
+      : `No se encontraron ${identifierName} en cero repetidos para corregir.`;
     document.querySelector("#preview").textContent = currentResult.records.slice(0, 6).map(({ line }) => line).join("\n");
     resultPanel.hidden = false;
   } catch (error) {
