@@ -25,7 +25,7 @@ test("detects and renumbers duplicated zero perception numbers while preserving 
 test("renumbers duplicate zero certificate numbers without touching fields after the type", () => {
   const first = retention();
   const second = retention({ amount: "1260,00" });
-  const result = processFile(`${first}\\n${second}`, "retenciones");
+  const result = processFile(`${first}\n${second}`, "retenciones");
   assert.equal(result.correctedCount, 1);
   assert.equal(result.records[0].line.slice(30, 46), "0000000000000000");
   assert.equal(result.records[1].line.slice(30, 46), "0000000000000001");
@@ -52,7 +52,7 @@ test("reads AGIP retention amounts from the final 11-character field", () => {
   assert.deepEqual(result.records.slice(1, 4).map(({ line }) => line.slice(30, 46)), [
     "0000202600086707", "0000202600086748", "0000202600086848",
   ]);
-  assert.equal(result.records[1].line.slice(46), sample.split("\\n")[1].slice(46));
+  assert.equal(result.records[1].line.slice(46), sample.split("\n")[1].slice(46));
 });
 
 test("duplicate zero sequences restart for a different CUIT", () => {
