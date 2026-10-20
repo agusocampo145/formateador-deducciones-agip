@@ -6,7 +6,7 @@ function perception({ cuit = "30-12345678-9", date = "04/09/2026", agent = "6622
   return `901${cuit}${date}${agent}${receipt}${type}${amount}`;
 }
 
-function retention({ cuit = "30-12345678-9", date = "30/09/2026", agent = "3001", certificate = "0000000000004231", type = "O ", receipt = "0000", amount = "581,84" } = {}) {
+function retention({ cuit = "30-12345678-9", date = "30/09/2026", agent = "3001", certificate = "0000000000000000", type = "O ", receipt = "0000", amount = "581,84" } = {}) {
   return `901${cuit}${date}${agent}${certificate}${type}00000${receipt}00000000000${amount.padStart(11, "0")}`;
 }
 
@@ -22,14 +22,14 @@ test("detects and renumbers duplicated zero perception numbers while preserving 
   assert.equal(result.totalCents, 11474539n);
 });
 
-test("renumbers duplicate zero retention numbers even when certificate values differ", () => {
+test("renumbers duplicate zero certificate numbers without touching fields after the type", () => {
   const first = retention();
-  const second = retention({ certificate: "0000000000004232", amount: "1260,00" });
-  const result = processFile(`${first}\n${second}`, "retenciones");
+  const second = retention({ amount: "1260,00" });
+  const result = processFile(`${first}\\n${second}`, "retenciones");
   assert.equal(result.correctedCount, 1);
-  assert.equal(result.records[0].line.slice(53, 57), "0000");
-  assert.equal(result.records[1].line.slice(53, 57), "0001");
-  assert.equal(result.records[1].line.slice(30, 53), second.slice(30, 53));
+  assert.equal(result.records[0].line.slice(30, 46), "0000000000000000");
+  assert.equal(result.records[1].line.slice(30, 46), "0000000000000001");
+  assert.equal(result.records[1].line.slice(46), second.slice(46));
   assert.equal(result.totalCents, 184184n);
 });
 
@@ -48,10 +48,11 @@ test("reads AGIP retention amounts from the final 11-character field", () => {
     25785333n, 126000n, 11340000n, 23324000n, 23169995n, 9394924n,
   ]);
   assert.equal(result.totalCents, 93140252n);
-  assert.equal(result.correctedCount, 2);
-  assert.equal(result.records[1].line.slice(53, 57), "0000");
-  assert.equal(result.records[2].line.slice(53, 57), "0001");
-  assert.equal(result.records[3].line.slice(53, 57), "0002");
+  assert.equal(result.correctedCount, 0);
+  assert.deepEqual(result.records.slice(1, 4).map(({ line }) => line.slice(30, 46)), [
+    "0000202600086707", "0000202600086748", "0000202600086848",
+  ]);
+  assert.equal(result.records[1].line.slice(46), sample.split("\\n")[1].slice(46));
 });
 
 test("duplicate zero sequences restart for a different CUIT", () => {
