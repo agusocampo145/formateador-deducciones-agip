@@ -4,6 +4,8 @@ const FORMATS = {
     length: 79,
     receiptStart: 53,
     receiptWidth: 4,
+    duplicateStart: 30,
+    duplicateWidth: 16,
     // AGIP's SIFERE TXT has an 11-character field between comprobante and importe.
     // The importe itself occupies the final 11 characters.
     amountStart: 68,
@@ -14,6 +16,8 @@ const FORMATS = {
     length: 51,
     receiptStart: 30,
     receiptWidth: 8,
+    duplicateStart: 30,
+    duplicateWidth: 8,
     amountStart: 40,
     amountWidth: 11,
   },
@@ -75,8 +79,12 @@ function processFile(contents, selectedFormat = "auto") {
       if (!/^\d+$/.test(comprobante)) {
         throw new Error("el campo comprobante debe contener solo dígitos.");
       }
+      const duplicateValue = line.slice(format.duplicateStart, format.duplicateStart + format.duplicateWidth);
+      if (!/^\d+$/.test(duplicateValue)) {
+        throw new Error("el campo identificador debe contener solo dígitos.");
+      }
       const cents = parseCents(line.slice(format.amountStart, format.amountStart + format.amountWidth), lineNumber);
-      records.push({ line, lineNumber, cuit: line.slice(3, 16), comprobante, cents });
+      records.push({ line, lineNumber, cuit: line.slice(3, 16), comprobante, duplicateValue, cents });
     } catch (error) {
       errors.push(error.message.startsWith("Línea ") ? error.message : `Línea ${lineNumber}: ${error.message}`);
     }
@@ -89,14 +97,14 @@ function processFile(contents, selectedFormat = "auto") {
   }
   if (!records.length) throw new Error("El archivo no contiene registros válidos.");
 
-  // The approved duplicate rule applies to repeated zero receipt numbers, grouped by CUIT.
+  // Retentions use the certificate before the type letter; perceptions use comprobante.\n  // Repeated all-zero identifiers are grouped by CUIT and renumbered in source order.
   const groups = new Map();
   const reserved = new Map();
   for (const record of records) {
     if (!reserved.has(record.cuit)) reserved.set(record.cuit, new Set());
-    reserved.get(record.cuit).add(record.comprobante);
-    if (/^0+$/.test(record.comprobante)) {
-      const key = `${record.cuit}|${record.comprobante}`;
+    reserved.get(record.cuit).add(record.duplicateValue);
+    if (/^0+$/.test(record.duplicateValue)) {
+      const key = `${record.cuit}|${record.duplicateValue}`;
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(record);
     }
@@ -113,13 +121,13 @@ function processFile(contents, selectedFormat = "auto") {
         if (candidate >= 10n ** BigInt(format.receiptWidth)) {
           throw new Error(`No quedan números disponibles para renumerar comprobantes de ${record.cuit}.`);
         }
-        next = candidate.toString().padStart(format.receiptWidth, "0");
+        next = candidate.toString().padStart(format.duplicateWidth, "0");
         candidate += 1n;
       } while (used.has(next));
 
-      const start = format.receiptStart;
-      record.line = record.line.slice(0, start) + next + record.line.slice(start + format.receiptWidth);
-      record.comprobante = next;
+      const start = format.duplicateStart;
+      record.line = record.line.slice(0, start) + next + record.line.slice(start + format.duplicateWidth);
+      record.duplicateValue = next;
       used.add(next);
       correctedCount += 1;
     }
