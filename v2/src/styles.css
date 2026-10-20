@@ -18,7 +18,7 @@ body { margin: 0; min-width: 320px; }
 .shell { max-width: 1000px; margin: 0 auto; padding: 0 34px 38px; }
 .topbar { height: 76px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(54,66,42,.2); }
 .brand { display:flex; align-items:center; gap:10px; color:var(--ink); font-weight:700; text-decoration:none; letter-spacing:.015em; }
-.brand-mark { display:grid; place-items:center; width:31px; height:31px; color:#fff; background:var(--leaf-dark); font:700 19px "Rajdhani",sans-serif; }
+.brand-logo { display:block; width:40px; height:40px; flex:0 0 40px; object-fit:contain; }
 .brand b { color:var(--leaf-dark); font-weight:600; padding:0 3px; }
 .privacy { display:flex; align-items:center; gap:9px; color:#51574a; font-size:12px; }
 .privacy-dot { width:8px; height:8px; border-radius:50%; background:#608f43; box-shadow:0 0 0 3px rgba(117,167,79,.2); }
