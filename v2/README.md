@@ -1,6 +1,6 @@
 # AGIP → SIFERE TXT tool (v2)
 
-Static browser app for importing AGIP's SIFERE-ready TXT files, validating every row, calculating the total locally, and correcting repeated zero comprobante numbers.
+Static browser app for importing AGIP's SIFERE-ready TXT files, validating every row, calculating the total locally, and correcting repeated zero identifiers.
 
 ## Run locally
 
@@ -20,10 +20,10 @@ node --test
 
 ## Record layouts supported
 
-- Retenciones: 79 characters. The `comprobante` field has 4 digits at offsets 53–56; the 16-character certificate remains unchanged.
+- Retenciones: 79 characters. The 16-character certificate at offsets 30–45 is checked for duplicate zero values and renumbered; fields after the type letter are preserved. The importe is read from the final 11 characters.
 - Percepciones: 51 characters. The `comprobante` field has 8 digits at offsets 30–37.
 
-For both files, repeated all-zero comprobantes are grouped by CUIT, in source row order. The first keeps its zero value and later occurrences receive the next available number at the same width. Other fields, line ordering, and amounts are preserved. Totals are accumulated as integer cents to avoid floating-point errors.
+Repeated all-zero identifiers are grouped by CUIT, in source row order. The first keeps its zero value and later occurrences receive the next available number at the same width. Other fields, line ordering, and amounts are preserved. Totals are accumulated as integer cents to avoid floating-point errors.
 
 The browser does not upload imported TXT contents. The selected file remains local to the user's device.
 
