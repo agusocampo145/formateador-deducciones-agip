@@ -25,7 +25,7 @@ node --test
 
 Repeated all-zero identifiers are grouped by CUIT, in source row order. The first keeps its zero value and later occurrences receive the next available number at the same width. Other fields, line ordering, and amounts are preserved. Totals are accumulated as integer cents to avoid floating-point errors.
 
-The browser does not upload imported TXT contents. The selected file remains local to the user's device.
+The browser does not upload imported TXT contents. The selected file remains local to the user's device. The interface accepts one TXT per run; retenciones and percepciones are processed separately. The downloaded filename ends in `-para-sifere.txt`, whether or not any identifier needed renumbering.
 
 ## Vercel
 

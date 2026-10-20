@@ -58,8 +58,12 @@ for (const eventName of ["dragleave", "drop"]) {
   });
 }
 dropzone.addEventListener("drop", (event) => {
-  const file = event.dataTransfer?.files?.[0];
-  if (file) chooseFile(file);
+  const files = event.dataTransfer?.files;
+  if (files?.length > 1) {
+    showError(new Error("Cargá un solo TXT por vez. Retenciones y percepciones se procesan por separado."));
+    return;
+  }
+  if (files?.[0]) chooseFile(files[0]);
 });
 
 processButton.addEventListener("click", async () => {
@@ -75,10 +79,10 @@ processButton.addEventListener("click", async () => {
     document.querySelector("#result-total").textContent = formatArs(currentResult.totalCents);
     const duplicateNote = document.querySelector("#duplicate-note");
     const identifierName = currentResult.format === "retenciones" ? "certificado(s)" : "comprobante(s)";
-    duplicateNote.hidden = currentResult.correctedCount === 0;
+    duplicateNote.hidden = false;
     duplicateNote.textContent = currentResult.correctedCount
       ? `Se renumeraron ${currentResult.correctedCount} ${identifierName} repetido(s) que estaban en cero. Revisá la vista previa antes de descargar.`
-      : `No se encontraron ${identifierName} en cero repetidos para corregir.`;
+      : `No hubo ${identifierName} repetido(s) en cero para renumerar. El contenido del archivo se conserva.`;
     document.querySelector("#preview").textContent = currentResult.records.slice(0, 6).map(({ line }) => line).join("\n");
     resultPanel.hidden = false;
   } catch (error) {
@@ -95,7 +99,7 @@ downloadButton.addEventListener("click", () => {
   const url = URL.createObjectURL(contents);
   const link = document.createElement("a");
   link.href = url;
-  link.download = currentFile.name.replace(/\.txt$/i, "") + "-corregido.txt";
+  link.download = currentFile.name.replace(/\.txt$/i, "") + "-para-sifere.txt";
   link.click();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 });

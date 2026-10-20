@@ -3,8 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Validá archivos SIFERE de AGIP, calculá totales y corregí comprobantes repetidos." />
-    <title>AGIP a SIFERE | Validador de TXT</title>
+    <meta name="description" content="Revisá duplicados y totales en archivos TXT de AGIP antes de importarlos en SIFERE." />
+    <title>AGIP → SIFERE | Preparador de archivos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./src/styles.css" />
   </head>
   <body>
@@ -17,14 +20,23 @@
       </header>
 
       <section class="intro">
-        <p class="eyebrow">HERRAMIENTA PARA INGRESOS BRUTOS</p>
-        <h1>Prepará tu archivo SIFERE</h1>
-        <p class="lead">Importá el TXT descargado de AGIP. Revisamos el formato, calculamos el total y corregimos identificadores duplicados en cero.</p>
+        <p class="eyebrow">ASISTENTE DE ARCHIVOS · INGRESOS BRUTOS</p>
+        <h1>Del TXT de AGIP<br /><span>a SIFERE, listo.</span></h1>
+        <p class="lead">Controlá duplicados y verificá el total antes de importar. Si el archivo ya está bien, lo descargás tal como llegó.</p>
+      </section>
+
+      <section class="how-it-works" aria-labelledby="how-title">
+        <h2 id="how-title">Tres pasos, sin vueltas</h2>
+        <ol>
+          <li><span>01</span><p><b>Descargá</b> el TXT desde AGIP</p></li>
+          <li><span>02</span><p><b>Revisalo</b> acá: duplicados y total</p></li>
+          <li><span>03</span><p><b>Subilo</b> a SIFERE Web</p></li>
+        </ol>
       </section>
 
       <section class="panel" aria-labelledby="upload-title">
         <div class="panel-heading">
-          <div><p class="eyebrow">PASO 1</p><h2 id="upload-title">Cargá el archivo</h2></div>
+          <div><p class="eyebrow">01 / CARGA</p><h2 id="upload-title">Un archivo por vez</h2></div>
           <span class="file-tag">.TXT</span>
         </div>
         <label class="dropzone" id="dropzone" for="file-input">
@@ -43,14 +55,15 @@
           </select>
           <button id="process" class="button button-primary" type="button" disabled>Analizar archivo <span aria-hidden="true">→</span></button>
         </div>
-        <p class="privacy-note">El archivo se procesa en este navegador. No se envían datos ni credenciales a un servidor.</p>
+        <p class="file-guidance">Retenciones y percepciones se procesan por separado. Si tenés ambos TXT, cargá uno y luego el otro.</p>
+        <p class="privacy-note"><span aria-hidden="true">●</span> El archivo se procesa en tu navegador; no se envía a un servidor.</p>
       </section>
 
       <section id="error-box" class="message error" role="alert" hidden></section>
 
       <section id="results" class="panel results" aria-live="polite" hidden>
         <div class="panel-heading result-heading">
-          <div><p class="eyebrow">PASO 2</p><h2>Revisá el resultado</h2></div>
+          <div><p class="eyebrow">02 / CONTROL</p><h2>Revisá el resultado</h2></div>
           <span id="status-pill" class="status-pill">Listo para descargar</span>
         </div>
         <div class="stats">
@@ -61,7 +74,7 @@
         <div id="duplicate-note" class="message info" hidden></div>
         <div class="preview-head"><h3>Vista previa</h3><span>Primeros registros del archivo</span></div>
         <pre id="preview" class="preview"></pre>
-        <button id="download" class="button button-primary download" type="button">Descargar TXT corregido <span aria-hidden="true">↓</span></button>
+        <button id="download" class="button button-primary download" type="button">Descargar TXT para subir a SIFERE <span aria-hidden="true">↓</span></button>
       </section>
 
       <footer class="footnote">
