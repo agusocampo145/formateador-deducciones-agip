@@ -4,8 +4,10 @@ const FORMATS = {
     length: 79,
     receiptStart: 53,
     receiptWidth: 4,
-    amountStart: 57,
-    amountWidth: 22,
+    // AGIP's SIFERE TXT has an 11-character field between comprobante and importe.
+    // The importe itself occupies the final 11 characters.
+    amountStart: 68,
+    amountWidth: 11,
   },
   percepciones: {
     name: "Percepciones",
