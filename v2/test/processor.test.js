@@ -7,7 +7,7 @@ function perception({ cuit = "30-12345678-9", date = "04/09/2026", agent = "6622
 }
 
 function retention({ cuit = "30-12345678-9", date = "30/09/2026", agent = "3001", certificate = "0000000000004231", type = "O ", receipt = "0000", amount = "581,84" } = {}) {
-  return `901${cuit}${date}${agent}${certificate}${type}00000${receipt}${amount.padStart(22, "0")}`;
+  return `901${cuit}${date}${agent}${certificate}${type}00000${receipt}00000000000${amount.padStart(11, "0")}`;
 }
 
 test("detects and renumbers duplicated zero perception numbers while preserving other fields", () => {
@@ -31,6 +31,27 @@ test("renumbers duplicate zero retention numbers even when certificate values di
   assert.equal(result.records[1].line.slice(53, 57), "0001");
   assert.equal(result.records[1].line.slice(30, 53), second.slice(30, 53));
   assert.equal(result.totalCents, 184184n);
+});
+
+test("reads AGIP retention amounts from the final 11-character field", () => {
+  const sample = [
+    "90130-50053085-130/09/202630010000000000004231O 0000000000000008098600257853,33",
+    "90130-52532274-922/09/202640000000202600086707O 0000000000000000424200001260,00",
+    "90130-52532274-922/09/202640000000202600086748O 0000000000000000433400113400,00",
+    "90130-52532274-928/09/202640000000202600086848O 0000000000000000475400233240,00",
+    "90130-65511804-330/09/202630000000000000000973O 0000000000000001543700231699,95",
+    "90130-68731043-415/09/202640945688000000210258O 0000000000000000045500093949,24",
+  ].join("\\n");
+  const result = processFile(sample);
+  assert.equal(result.format, "retenciones");
+  assert.deepEqual(result.records.map(({ cents }) => cents), [
+    25785333n, 126000n, 11340000n, 23324000n, 23169995n, 9394924n,
+  ]);
+  assert.equal(result.totalCents, 93140252n);
+  assert.equal(result.correctedCount, 2);
+  assert.equal(result.records[1].line.slice(53, 57), "0000");
+  assert.equal(result.records[2].line.slice(53, 57), "0001");
+  assert.equal(result.records[3].line.slice(53, 57), "0002");
 });
 
 test("duplicate zero sequences restart for a different CUIT", () => {
