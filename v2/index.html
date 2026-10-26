@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Revisá duplicados y totales en archivos TXT de AGIP y ARBA antes de importarlos." />
+    <title>Emprolijando | Archivos de Ingresos Brutos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;600;700&family=Rajdhani:wght@600&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/png" sizes="256x256" href="./assets/sifere-transform-mark.png" />
+    <link rel="apple-touch-icon" href="./assets/sifere-transform-mark.png" />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Inicio">
+          <img class="brand-logo" src="./assets/sifere-transform-mark.png" alt="" width="40" height="40" />
+          <span class="brand-name">EMPROLIJANDO<small>AGIP · ARBA</small></span>
+        </a>
+        <div class="topbar-meta">
+          <div class="agency-pills" aria-label="Organismos compatibles"><span>AGIP</span><span>ARBA</span></div>
+          <span class="privacy"><span class="privacy-dot"></span>Procesamiento local</span>
+        </div>
+      </header>
+
+      <section class="intro">
+        <div class="intro-copy">
+          <p class="eyebrow">PREPARADOR DE ARCHIVOS · AGIP / ARBA</p>
+          <h1>Tus archivos,<br /><span>en orden.</span></h1>
+          <p class="lead">Revisá duplicados y totales antes de importar tus retenciones o percepciones. Si el TXT ya está bien, se conserva tal como llegó.</p>
+        </div>
+        <div class="hero-illustration" aria-hidden="true">
+          <div class="hero-orbit"></div>
+          <div class="paper paper-back"><i></i><i></i><i></i></div>
+          <div class="paper paper-front"><b>TXT</b><i></i><i></i><i></i><span>✓</span></div>
+          <div class="hero-stamp">EN<br />ORDEN</div>
+          <span class="hero-caption">LISTO PARA IMPORTAR</span>
+        </div>
+      </section>
+
+      <section class="how-it-works" aria-labelledby="how-title">
+        <h2 id="how-title">Tres pasos, sin vueltas</h2>
+        <ol>
+          <li><span>01</span><p><b>Descargá</b> el TXT desde AGIP o ARBA</p></li>
+          <li><span>02</span><p><b>Revisalo</b> acá: duplicados y total</p></li>
+          <li><span>03</span><p><b>Importalo</b> en el sistema correspondiente</p></li>
+        </ol>
+      </section>
+
+      <section class="panel" aria-labelledby="upload-title">
+        <div class="panel-heading">
+          <div><p class="eyebrow">01 / CARGA</p><h2 id="upload-title">Un archivo por vez</h2></div>
+          <span class="file-tag">.TXT</span>
+        </div>
+        <label class="dropzone" id="dropzone" for="file-input">
+          <span class="upload-icon" aria-hidden="true">↑</span>
+          <span class="drop-title">Arrastrá el archivo hasta acá</span>
+          <span class="drop-subtitle">o <span class="browse">elegilo desde tu dispositivo</span></span>
+          <span id="file-name" class="file-name">TXT de retenciones o percepciones de AGIP o ARBA</span>
+          <input id="file-input" type="file" accept=".txt,text/plain" />
+        </label>
+        <div class="row-controls">
+          <label for="kind">Tipo de archivo</label>
+          <select id="kind">
+            <option value="auto">Detectar automáticamente</option>
+            <option value="retenciones">Retenciones</option>
+            <option value="percepciones">Percepciones</option>
+          </select>
+          <button id="process" class="button button-primary process-button" type="button" disabled>
+            <span class="process-copy">Procesar archivo</span>
+            <span class="process-motion" aria-hidden="true">
+              <span class="process-destination"><span class="destination-arrow">↓</span><span class="destination-label">SIFERE</span></span>
+              <span class="process-sheet"></span>
+            </span>
+          </button>
+        </div>
+        <p class="file-guidance">Retenciones y percepciones se procesan por separado. Si tenés ambos TXT, cargá uno y luego el otro.</p>
+        <p class="privacy-note"><span aria-hidden="true">●</span> El archivo se procesa en tu navegador; no se envía a un servidor.</p>
+      </section>
+
+      <section id="error-box" class="message error" role="alert" hidden></section>
+
+      <section id="results" class="panel results" aria-live="polite" hidden>
+        <div class="panel-heading result-heading">
+          <div><p class="eyebrow">02 / CONTROL</p><h2>Revisá el resultado</h2></div>
+          <span id="status-pill" class="status-pill">Listo para descargar</span>
+        </div>
+        <div class="stats">
+          <div class="stat"><span>Tipo</span><strong id="result-kind">—</strong></div>
+          <div class="stat"><span>Registros</span><strong id="result-count">0</strong></div>
+          <div class="stat"><span>Total</span><strong id="result-total">$ 0,00</strong></div>
+        </div>
+        <div id="duplicate-note" class="message info" hidden></div>
+        <div class="preview-head"><h3>Vista previa</h3><span>Primeros registros del archivo</span></div>
+        <pre id="preview" class="preview"></pre>
+        <a id="download" class="button button-primary download" href="#" download>Descargar TXT procesado <span aria-hidden="true">↓</span></a>
+      </section>
+
+      <footer class="footnote">
+        <span>Prepará el archivo, revisá el total y luego importalo en el sistema de origen.</span>
+        <span class="footnote-mark">AGIP / ARBA</span>
+      </footer>
+    </main>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
