@@ -22,6 +22,22 @@ test("detects and renumbers duplicated zero perception numbers while preserving 
   assert.equal(result.totalCents, 11474539n);
 });
 
+test("changes only the duplicate field and preserves BOM, blank lines, line endings and final newline", () => {
+  const first = perception();
+  const second = perception({ agent: "9722", date: "30/09/2026" });
+  const source = `\uFEFF${first}\r\n\r\n${second}\r\n`;
+  const updatedSecond = second.slice(0, 30) + "00000001" + second.slice(38);
+
+  const result = processFile(source);
+
+  assert.equal(result.output, `\uFEFF${first}\r\n\r\n${updatedSecond}\r\n`);
+});
+
+test("leaves an unchanged file byte-for-byte identical", () => {
+  const source = `\uFEFF${perception({ receipt: "00000017" })}\r\n`;
+  assert.equal(processFile(source).output, source);
+});
+
 test("renumbers duplicate zero certificate numbers without touching fields after the type", () => {
   const first = retention();
   const second = retention({ amount: "1260,00" });

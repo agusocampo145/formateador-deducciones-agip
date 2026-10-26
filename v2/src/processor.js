@@ -49,20 +49,39 @@ function detectFormat(lines) {
   throw new Error(`No reconozco el formato: la primera línea tiene ${first.length} caracteres; esperaba 79 (retenciones) o 51 (percepciones).`);
 }
 
+function splitSourceLines(contents) {
+  const lines = [];
+  const lineBreak = /\r\n|\r|\n/g;
+  let start = 0;
+  let match;
+
+  while ((match = lineBreak.exec(contents))) {
+    lines.push({ line: contents.slice(start, match.index), start });
+    start = match.index + match[0].length;
+  }
+  if (start < contents.length || lines.length === 0) {
+    lines.push({ line: contents.slice(start), start });
+  }
+  return lines;
+}
+
 function processFile(contents, selectedFormat = "auto") {
   if (typeof contents !== "string" || contents.length === 0) {
     throw new Error("El archivo está vacío.");
   }
 
-  const normalized = contents.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
-  const sourceLines = normalized.split("\n");
-  const formatKey = selectedFormat === "auto" ? detectFormat(sourceLines) : selectedFormat;
+  const sourceLines = splitSourceLines(contents);
+  const parsedLines = sourceLines.map(({ line }, index) =>
+    index === 0 ? line.replace(/^\uFEFF/, "") : line);
+  const formatKey = selectedFormat === "auto" ? detectFormat(parsedLines) : selectedFormat;
   const format = FORMATS[formatKey];
   if (!format) throw new Error("Elegí Retenciones o Percepciones.");
 
   const records = [];
   const errors = [];
-  sourceLines.forEach((line, index) => {
+  sourceLines.forEach(({ line: rawLine, start }, index) => {
+    const bomLength = index === 0 && rawLine.startsWith("\uFEFF") ? 1 : 0;
+    const line = rawLine.slice(bomLength);
     if (line.trim() === "") return;
     const lineNumber = index + 1;
     try {
@@ -84,7 +103,7 @@ function processFile(contents, selectedFormat = "auto") {
         throw new Error("el campo identificador debe contener solo dígitos.");
       }
       const cents = parseCents(line.slice(format.amountStart, format.amountStart + format.amountWidth), lineNumber);
-      records.push({ line, lineNumber, cuit: line.slice(3, 16), comprobante, duplicateValue, cents });
+      records.push({ line, lineNumber, sourceOffset: start + bomLength, cuit: line.slice(3, 16), comprobante, duplicateValue, cents });
     } catch (error) {
       errors.push(error.message.startsWith("Línea ") ? error.message : `Línea ${lineNumber}: ${error.message}`);
     }
@@ -111,6 +130,7 @@ function processFile(contents, selectedFormat = "auto") {
   }
 
   let correctedCount = 0;
+  const replacements = [];
   for (const group of groups.values()) {
     if (group.length < 2) continue;
     const used = reserved.get(group[0].cuit);
@@ -126,6 +146,7 @@ function processFile(contents, selectedFormat = "auto") {
       } while (used.has(next));
 
       const start = format.duplicateStart;
+      replacements.push({ offset: record.sourceOffset + start, value: next, width: format.duplicateWidth });
       record.line = record.line.slice(0, start) + next + record.line.slice(start + format.duplicateWidth);
       record.duplicateValue = next;
       used.add(next);
@@ -133,13 +154,19 @@ function processFile(contents, selectedFormat = "auto") {
     }
   }
 
+  const output = replacements
+    .sort((a, b) => b.offset - a.offset)
+    .reduce((text, replacement) =>
+      text.slice(0, replacement.offset) + replacement.value + text.slice(replacement.offset + replacement.width),
+    contents);
+
   return {
     format: formatKey,
     label: format.name,
     records,
     correctedCount,
     totalCents: records.reduce((total, record) => total + record.cents, 0n),
-    output: records.map((record) => record.line).join("\r\n"),
+    output,
   };
 }
 
