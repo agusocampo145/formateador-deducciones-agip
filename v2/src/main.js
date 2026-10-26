@@ -7,6 +7,7 @@ const processButton = document.querySelector("#process");
 const downloadButton = document.querySelector("#download");
 const errorBox = document.querySelector("#error-box");
 const resultPanel = document.querySelector("#results");
+const statusPill = document.querySelector("#status-pill");
 const dropzone = document.querySelector("#dropzone");
 
 let currentFile;
@@ -17,6 +18,8 @@ function showError(error) {
   errorBox.innerHTML = `<strong>${escapeHtml(error.message)}</strong>${items ? `<ul>${items}</ul>` : ""}`;
   errorBox.hidden = false;
   resultPanel.hidden = true;
+  resultPanel.classList.remove("is-entering");
+  statusPill.classList.remove("is-success");
 }
 
 function clearError() {
@@ -36,6 +39,8 @@ function chooseFile(file) {
   fileName.textContent = file ? `${file.name} · ${(file.size / 1024).toFixed(1)} KB` : "TXT de retenciones o percepciones SIFERE";
   processButton.disabled = !file;
   resultPanel.hidden = true;
+  resultPanel.classList.remove("is-entering");
+  statusPill.classList.remove("is-success");
   clearError();
 }
 
@@ -70,7 +75,8 @@ processButton.addEventListener("click", async () => {
   if (!currentFile) return;
   clearError();
   processButton.disabled = true;
-  processButton.textContent = "Analizando…";
+  processButton.setAttribute("aria-busy", "true");
+  processButton.innerHTML = 'Revisando archivo <span class="processing-indicator" aria-hidden="true">↻</span>';
   try {
     const contents = await currentFile.text();
     currentResult = processFile(contents, kindSelect.value);
@@ -84,11 +90,17 @@ processButton.addEventListener("click", async () => {
       ? `Se renumeraron ${currentResult.correctedCount} ${identifierName} repetido(s) que estaban en cero. Revisá la vista previa antes de descargar.`
       : `No hubo ${identifierName} repetido(s) en cero para renumerar. El contenido del archivo se conserva.`;
     document.querySelector("#preview").textContent = currentResult.records.slice(0, 6).map(({ line }) => line).join("\n");
+    resultPanel.classList.remove("is-entering");
+    statusPill.classList.remove("is-success");
     resultPanel.hidden = false;
+    void resultPanel.offsetWidth;
+    resultPanel.classList.add("is-entering");
+    statusPill.classList.add("is-success");
   } catch (error) {
     showError(error);
   } finally {
     processButton.disabled = false;
+    processButton.removeAttribute("aria-busy");
     processButton.innerHTML = 'Analizar archivo <span aria-hidden="true">→</span>';
   }
 });
