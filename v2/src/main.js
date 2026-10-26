@@ -9,6 +9,7 @@ const errorBox = document.querySelector("#error-box");
 const resultPanel = document.querySelector("#results");
 const statusPill = document.querySelector("#status-pill");
 const dropzone = document.querySelector("#dropzone");
+let downloadUrl;
 
 let currentFile;
 let currentResult;
@@ -56,6 +57,10 @@ function startProcessingAnimation() {
 }
 
 function chooseFile(file) {
+  if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+  downloadUrl = undefined;
+  downloadButton.removeAttribute("href");
+  downloadButton.removeAttribute("download");
   currentFile = file;
   currentResult = undefined;
   fileName.textContent = file ? `${file.name} · ${(file.size / 1024).toFixed(1)} KB` : "TXT de retenciones o percepciones SIFERE";
@@ -70,6 +75,10 @@ fileInput.addEventListener("change", () => chooseFile(fileInput.files?.[0]));
 kindSelect.addEventListener("change", () => {
   currentResult = undefined;
   resultPanel.hidden = true;
+  if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+  downloadUrl = undefined;
+  downloadButton.removeAttribute("href");
+  downloadButton.removeAttribute("download");
 });
 
 for (const eventName of ["dragenter", "dragover"]) {
@@ -118,6 +127,11 @@ processButton.addEventListener("click", async () => {
     downloadButton.innerHTML = isArba
       ? 'Descargar TXT para ARBA <span aria-hidden="true">↓</span>'
       : 'Descargar TXT para subir a SIFERE <span aria-hidden="true">↓</span>';
+    if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+    downloadUrl = URL.createObjectURL(new Blob([currentResult.output], { type: "text/plain;charset=utf-8" }));
+    const suffix = isArba ? "-para-arba.txt" : "-para-sifere.txt";
+    downloadButton.href = downloadUrl;
+    downloadButton.download = currentFile.name.replace(/\.txt$/i, "") + suffix;
     await animationFinished;
     resultPanel.classList.remove("is-entering");
     statusPill.classList.remove("is-success");
@@ -136,14 +150,6 @@ processButton.addEventListener("click", async () => {
   }
 });
 
-downloadButton.addEventListener("click", () => {
-  if (!currentResult || !currentFile) return;
-  const contents = new Blob([currentResult.output], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(contents);
-  const link = document.createElement("a");
-  link.href = url;
-  const suffix = currentResult.format.startsWith("arba-") ? "-para-arba.txt" : "-para-sifere.txt";
-  link.download = currentFile.name.replace(/\.txt$/i, "") + suffix;
-  link.click();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+window.addEventListener("beforeunload", () => {
+  if (downloadUrl) URL.revokeObjectURL(downloadUrl);
 });

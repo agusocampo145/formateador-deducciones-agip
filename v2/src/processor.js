@@ -1,6 +1,6 @@
 const FORMATS = {
   retenciones: {
-    name: "Retenciones",
+    name: "AGIP · Retenciones",
     length: 79,
     receiptStart: 53,
     receiptWidth: 4,
@@ -12,7 +12,7 @@ const FORMATS = {
     amountWidth: 11,
   },
   percepciones: {
-    name: "Percepciones",
+    name: "AGIP · Percepciones",
     length: 51,
     receiptStart: 30,
     receiptWidth: 8,
