@@ -55,7 +55,13 @@
             <option value="retenciones">Retenciones</option>
             <option value="percepciones">Percepciones</option>
           </select>
-          <button id="process" class="button button-primary" type="button" disabled>Analizar archivo <span aria-hidden="true">→</span></button>
+          <button id="process" class="button button-primary process-button" type="button" disabled>
+            <span class="process-copy">Procesar archivo</span>
+            <span class="process-motion" aria-hidden="true">
+              <span class="process-destination"><span class="destination-arrow">↓</span><span class="destination-label">SIFERE</span></span>
+              <span class="process-sheet"><span>TXT</span></span>
+            </span>
+          </button>
         </div>
         <p class="file-guidance">Retenciones y percepciones se procesan por separado. Si tenés ambos TXT, cargá uno y luego el otro.</p>
         <p class="privacy-note"><span aria-hidden="true">●</span> El archivo se procesa en tu navegador; no se envía a un servidor.</p>

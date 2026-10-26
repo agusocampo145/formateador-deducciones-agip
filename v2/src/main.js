@@ -33,6 +33,28 @@ function escapeHtml(value) {
   })[char]);
 }
 
+function startProcessingAnimation() {
+  processButton.classList.remove("is-processing");
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    processButton.classList.add("is-processing");
+    return Promise.resolve();
+  }
+
+  const sheet = processButton.querySelector(".process-sheet");
+  const animationFinished = new Promise((resolve) => {
+    let timeoutId;
+    const finish = () => {
+      window.clearTimeout(timeoutId);
+      resolve();
+    };
+    sheet.addEventListener("animationend", finish, { once: true });
+    timeoutId = window.setTimeout(finish, 1500);
+  });
+  void processButton.offsetWidth;
+  processButton.classList.add("is-processing");
+  return animationFinished;
+}
+
 function chooseFile(file) {
   currentFile = file;
   currentResult = undefined;
@@ -76,7 +98,8 @@ processButton.addEventListener("click", async () => {
   clearError();
   processButton.disabled = true;
   processButton.setAttribute("aria-busy", "true");
-  processButton.innerHTML = 'Revisando archivo <span class="processing-indicator" aria-hidden="true">↻</span>';
+  processButton.setAttribute("aria-label", "Procesando archivo");
+  const animationFinished = startProcessingAnimation();
   try {
     const contents = await currentFile.text();
     currentResult = processFile(contents, kindSelect.value);
@@ -90,6 +113,7 @@ processButton.addEventListener("click", async () => {
       ? `Se renumeraron ${currentResult.correctedCount} ${identifierName} repetido(s) que estaban en cero. Revisá la vista previa antes de descargar.`
       : `No hubo ${identifierName} repetido(s) en cero para renumerar. El contenido del archivo se conserva.`;
     document.querySelector("#preview").textContent = currentResult.records.slice(0, 6).map(({ line }) => line).join("\n");
+    await animationFinished;
     resultPanel.classList.remove("is-entering");
     statusPill.classList.remove("is-success");
     resultPanel.hidden = false;
@@ -97,11 +121,13 @@ processButton.addEventListener("click", async () => {
     resultPanel.classList.add("is-entering");
     statusPill.classList.add("is-success");
   } catch (error) {
+    await animationFinished;
     showError(error);
   } finally {
     processButton.disabled = false;
+    processButton.classList.remove("is-processing");
     processButton.removeAttribute("aria-busy");
-    processButton.innerHTML = 'Analizar archivo <span aria-hidden="true">→</span>';
+    processButton.removeAttribute("aria-label");
   }
 });
 
