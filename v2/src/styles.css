@@ -74,7 +74,6 @@ select { height:43px; padding:0 12px; border:1px solid #bcbfac; border-radius:0;
 .process-button .destination-label { position:absolute; top:100%; left:50%; margin-top:2px; color:rgba(255,255,255,.92); font:600 7px/1 "Raleway",sans-serif; letter-spacing:.08em; transform:translateX(-50%); }
 .process-button .process-sheet { position:absolute; z-index:1; top:50%; left:50%; display:grid; place-items:center; width:24px; height:30px; border:1px solid #d7dfc9; border-radius:2px; color:#476b32; background:#fbfaf3; box-shadow:0 2px 5px rgba(26,43,19,.2); font:700 6px/1 "Raleway",sans-serif; opacity:0; }
 .process-sheet::before { position:absolute; top:-1px; right:-1px; width:8px; height:8px; border-left:1px solid #d7dfc9; border-bottom:1px solid #d7dfc9; background:#e9efdf; clip-path:polygon(0 0,100% 100%,0 100%); content:""; }
-.process-sheet::after { position:absolute; right:4px; bottom:4px; left:4px; height:8px; background:repeating-linear-gradient(to bottom,#a8b695 0 1px,transparent 1px 4px); content:""; }
 .process-button.is-processing .process-sheet { animation: sheet-delivery 1300ms cubic-bezier(.24,.72,.26,1) both; }
 .file-guidance { margin:12px 0 0; color:#4f5248; font-size:11px; line-height:1.5; text-align:center; }
 .privacy-note { display:flex; justify-content:center; align-items:center; gap:7px; margin:9px 0 0; color:#65685d; font-size:10px; }
