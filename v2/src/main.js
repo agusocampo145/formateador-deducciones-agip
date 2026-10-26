@@ -107,12 +107,17 @@ processButton.addEventListener("click", async () => {
     document.querySelector("#result-count").textContent = currentResult.records.length.toLocaleString("es-AR");
     document.querySelector("#result-total").textContent = formatArs(currentResult.totalCents);
     const duplicateNote = document.querySelector("#duplicate-note");
-    const identifierName = currentResult.format === "retenciones" ? "certificado(s)" : "comprobante(s)";
+    const isArba = currentResult.format.startsWith("arba-");
+    document.querySelector(".destination-label").textContent = isArba ? "ARBA" : "SIFERE";
+    const identifierName = isArba ? "identificador(es)" : currentResult.format === "retenciones" ? "certificado(s)" : "comprobante(s)";
     duplicateNote.hidden = false;
     duplicateNote.textContent = currentResult.correctedCount
       ? `Se renumeraron ${currentResult.correctedCount} ${identifierName} repetido(s) que estaban en cero. Revisá la vista previa antes de descargar.`
       : `No hubo ${identifierName} repetido(s) en cero para renumerar. El contenido del archivo se conserva.`;
     document.querySelector("#preview").textContent = currentResult.records.slice(0, 6).map(({ line }) => line).join("\n");
+    downloadButton.innerHTML = isArba
+      ? 'Descargar TXT para ARBA <span aria-hidden="true">↓</span>'
+      : 'Descargar TXT para subir a SIFERE <span aria-hidden="true">↓</span>';
     await animationFinished;
     resultPanel.classList.remove("is-entering");
     statusPill.classList.remove("is-success");
@@ -137,7 +142,8 @@ downloadButton.addEventListener("click", () => {
   const url = URL.createObjectURL(contents);
   const link = document.createElement("a");
   link.href = url;
-  link.download = currentFile.name.replace(/\.txt$/i, "") + "-para-sifere.txt";
+  const suffix = currentResult.format.startsWith("arba-") ? "-para-arba.txt" : "-para-sifere.txt";
+  link.download = currentFile.name.replace(/\.txt$/i, "") + suffix;
   link.click();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 });

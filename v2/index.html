@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Revisá duplicados y totales en archivos TXT de AGIP antes de importarlos en SIFERE." />
-    <title>AGIP → SIFERE | Preparador de archivos</title>
+    <meta name="description" content="Revisá duplicados y totales en archivos TXT de AGIP y ARBA antes de importarlos." />
+    <title>AGIP + ARBA | Preparador de archivos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;600;700&family=Rajdhani:wght@600&display=swap" rel="stylesheet" />
@@ -16,23 +16,23 @@
     <main class="shell">
       <header class="topbar">
         <a class="brand" href="./" aria-label="Inicio">
-          <img class="brand-logo" src="./assets/sifere-transform-mark.png" alt="" width="40" height="40" /><span>AGIP <b>→</b> SIFERE</span>
+          <img class="brand-logo" src="./assets/sifere-transform-mark.png" alt="" width="40" height="40" /><span>AGIP <b>+</b> ARBA</span>
         </a>
         <span class="privacy"><span class="privacy-dot"></span>Procesamiento local</span>
       </header>
 
       <section class="intro">
         <p class="eyebrow">ASISTENTE DE ARCHIVOS · INGRESOS BRUTOS</p>
-        <h1>Del TXT de AGIP<br /><span>a SIFERE, listo.</span></h1>
-        <p class="lead">Controlá duplicados y verificá el total antes de importar. Si el archivo ya está bien, lo descargás tal como llegó.</p>
+        <h1>Un TXT más prolijo<br /><span>antes de importarlo.</span></h1>
+        <p class="lead">Controlá duplicados y verificá el total en archivos de AGIP y ARBA. Si el archivo ya está bien, lo descargás tal como llegó.</p>
       </section>
 
       <section class="how-it-works" aria-labelledby="how-title">
         <h2 id="how-title">Tres pasos, sin vueltas</h2>
         <ol>
-          <li><span>01</span><p><b>Descargá</b> el TXT desde AGIP</p></li>
+          <li><span>01</span><p><b>Descargá</b> el TXT desde AGIP o ARBA</p></li>
           <li><span>02</span><p><b>Revisalo</b> acá: duplicados y total</p></li>
-          <li><span>03</span><p><b>Subilo</b> a SIFERE Web</p></li>
+          <li><span>03</span><p><b>Importalo</b> en el sistema correspondiente</p></li>
         </ol>
       </section>
 
@@ -45,7 +45,7 @@
           <span class="upload-icon" aria-hidden="true">↑</span>
           <span class="drop-title">Arrastrá el archivo hasta acá</span>
           <span class="drop-subtitle">o <span class="browse">elegilo desde tu dispositivo</span></span>
-          <span id="file-name" class="file-name">TXT de retenciones o percepciones SIFERE</span>
+          <span id="file-name" class="file-name">TXT de retenciones o percepciones de AGIP o ARBA</span>
           <input id="file-input" type="file" accept=".txt,text/plain" />
         </label>
         <div class="row-controls">
@@ -82,12 +82,12 @@
         <div id="duplicate-note" class="message info" hidden></div>
         <div class="preview-head"><h3>Vista previa</h3><span>Primeros registros del archivo</span></div>
         <pre id="preview" class="preview"></pre>
-        <button id="download" class="button button-primary download" type="button">Descargar TXT para subir a SIFERE <span aria-hidden="true">↓</span></button>
+        <button id="download" class="button button-primary download" type="button">Descargar TXT procesado <span aria-hidden="true">↓</span></button>
       </section>
 
       <footer class="footnote">
         <span>Prepará el archivo, revisá el total y luego importalo en SIFERE Web.</span>
-        <span class="footnote-mark">AGIP / SIFERE</span>
+        <span class="footnote-mark">AGIP / ARBA</span>
       </footer>
     </main>
     <script type="module" src="./src/main.js"></script>

@@ -101,3 +101,40 @@ test("rejects malformed rows as a batch and reports the source line", () => {
 test("sums comma decimals exactly in Argentine currency format", () => {
   assert.equal(formatArs(123456789n), "$ 1.234.567,89");
 });
+
+test("detects ARBA perceptions and numbers zero comprobantes across the file", () => {
+  const sample = [
+    "0290230-50000845-414/09/20260000000000000000000000000O 000000000340,00",
+    "0290230-50000845-415/09/20260000000000000000000000000O 000000000988,11",
+    "0290230-50000845-411/09/20260000000000000000000000000O 000000002557,29",
+    "0290233-99924210-924/09/20260000000000000000000000000O 000000048257,74",
+    "0290230-50000845-424/09/20260000000000000000000000000O 000000000358,72",
+    "0290230-50000845-416/09/20260000000000000000000000000O 000000001144,00",
+  ].join("\r\n");
+  const result = processFile(sample);
+  assert.equal(result.format, "arba-percepciones");
+  assert.equal(result.correctedCount, 5);
+  assert.deepEqual(result.records.map(({ line }) => line.slice(28, 53)), [
+    "0000000000000000000000000",
+    "0000000000000000000000001",
+    "0000000000000000000000002",
+    "0000000000000000000000003",
+    "0000000000000000000000004",
+    "0000000000000000000000005",
+  ]);
+  assert.equal(result.totalCents, 5364586n);
+  assert.equal(result.records[1].line.slice(53), sample.split("\r\n")[1].slice(53));
+  assert.equal(result.output, result.records.map(({ line }) => line).join("\r\n"));
+});
+
+test("detects ARBA retentions, totals the final amount and preserves nonzero identifiers", () => {
+  const sample = [
+    "0190230-71666176-410/09/20260000100000000000000000165O 00000000000000210761000000041695,23",
+    "0190230-68865335-115/09/20260000100000000000000000530O 00000000000000212967000000105445,65",
+  ].join("\n");
+  const result = processFile(sample);
+  assert.equal(result.format, "arba-retenciones");
+  assert.equal(result.correctedCount, 0);
+  assert.equal(result.totalCents, 14714088n);
+  assert.equal(result.output, sample);
+});

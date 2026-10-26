@@ -21,6 +21,20 @@ const FORMATS = {
     amountStart: 40,
     amountWidth: 11,
   },
+  "arba-retenciones": {
+    name: "ARBA · Retenciones",
+    family: "arba",
+    prefix: "019",
+    identifierStart: 28,
+    identifierWidth: 25,
+  },
+  "arba-percepciones": {
+    name: "ARBA · Percepciones",
+    family: "arba",
+    prefix: "029",
+    identifierStart: 28,
+    identifierWidth: 25,
+  },
 };
 
 function parseCents(field, lineNumber) {
@@ -44,9 +58,12 @@ function validDate(value) {
 function detectFormat(lines) {
   const first = lines.find((line) => line.trim() !== "");
   if (!first) throw new Error("El archivo no contiene registros.");
+  const clean = first.replace(/^\uFEFF/, "");
+  if (clean.startsWith("019")) return "arba-retenciones";
+  if (clean.startsWith("029")) return "arba-percepciones";
   if (first.length === FORMATS.retenciones.length) return "retenciones";
   if (first.length === FORMATS.percepciones.length) return "percepciones";
-  throw new Error(`No reconozco el formato: la primera línea tiene ${first.length} caracteres; esperaba 79 (retenciones) o 51 (percepciones).`);
+  throw new Error(`No reconozco el formato: la primera línea tiene ${first.length} caracteres.`);
 }
 
 function splitSourceLines(contents) {
@@ -73,7 +90,10 @@ function processFile(contents, selectedFormat = "auto") {
   const sourceLines = splitSourceLines(contents);
   const parsedLines = sourceLines.map(({ line }, index) =>
     index === 0 ? line.replace(/^\uFEFF/, "") : line);
-  const formatKey = selectedFormat === "auto" ? detectFormat(parsedLines) : selectedFormat;
+  const detected = detectFormat(parsedLines);
+  let formatKey = selectedFormat === "auto" ? detected : selectedFormat;
+  if (selectedFormat === "retenciones" && detected === "arba-retenciones") formatKey = detected;
+  if (selectedFormat === "percepciones" && detected === "arba-percepciones") formatKey = detected;
   const format = FORMATS[formatKey];
   if (!format) throw new Error("Elegí Retenciones o Percepciones.");
 
@@ -85,25 +105,42 @@ function processFile(contents, selectedFormat = "auto") {
     if (line.trim() === "") return;
     const lineNumber = index + 1;
     try {
-      if (line.length !== format.length) {
+      const dateStart = format.family === "arba" ? 18 : 16;
+      if (format.family === "arba") {
+        if (!new RegExp(`^${format.prefix}\\d{4}-\\d{8}-\\d$`).test(line.slice(0, 18))) {
+          throw new Error("el código inicial o el CUIT no tiene el formato ARBA esperado.");
+        }
+        if (line.length <= 54 || !/^[A-Z]/.test(line[53])) {
+          throw new Error("el registro ARBA no contiene el identificador y tipo de comprobante esperados.");
+        }
+      } else if (line.length !== format.length) {
         throw new Error(`tiene ${line.length} caracteres; se esperaban ${format.length}.`);
-      }
-      if (!/^\d{3}\d{2}-\d{8}-\d$/.test(line.slice(0, 16))) {
+      } else if (!/^\d{3}\d{2}-\d{8}-\d$/.test(line.slice(0, 16))) {
         throw new Error("el código inicial o el CUIT no tiene el formato esperado.");
       }
-      if (!validDate(line.slice(16, 26))) {
+      if (!validDate(line.slice(dateStart, dateStart + 10))) {
         throw new Error("la fecha no es válida (se espera DD/MM/AAAA).");
       }
-      const comprobante = line.slice(format.receiptStart, format.receiptStart + format.receiptWidth);
-      if (!/^\d+$/.test(comprobante)) {
-        throw new Error("el campo comprobante debe contener solo dígitos.");
+      const duplicateStart = format.family === "arba" ? format.identifierStart : format.duplicateStart;
+      const duplicateWidth = format.family === "arba" ? format.identifierWidth : format.duplicateWidth;
+      if (format.family !== "arba") {
+        const comprobante = line.slice(format.receiptStart, format.receiptStart + format.receiptWidth);
+        if (!/^\d+$/.test(comprobante)) throw new Error("el campo comprobante debe contener solo dígitos.");
       }
-      const duplicateValue = line.slice(format.duplicateStart, format.duplicateStart + format.duplicateWidth);
+      const duplicateValue = line.slice(duplicateStart, duplicateStart + duplicateWidth);
       if (!/^\d+$/.test(duplicateValue)) {
         throw new Error("el campo identificador debe contener solo dígitos.");
       }
-      const cents = parseCents(line.slice(format.amountStart, format.amountStart + format.amountWidth), lineNumber);
-      records.push({ line, lineNumber, sourceOffset: start + bomLength, cuit: line.slice(3, 16), comprobante, duplicateValue, cents });
+      let cents;
+      if (format.family === "arba") {
+        const amountWidth = 15;
+        const amount = line.slice(-amountWidth);
+        if (!/^\d+,\d{2}$/.test(amount)) throw new Error(`Línea ${lineNumber}: el importe ARBA debe ocupar ${amountWidth} caracteres y terminar en coma y dos decimales.`);
+        cents = parseCents(amount, lineNumber);
+      } else {
+        cents = parseCents(line.slice(format.amountStart, format.amountStart + format.amountWidth), lineNumber);
+      }
+      records.push({ line, lineNumber, sourceOffset: start + bomLength, cuit: format.family === "arba" ? "ARBA" : line.slice(3, 16), duplicateValue, duplicateStart, duplicateWidth, cents });
     } catch (error) {
       errors.push(error.message.startsWith("Línea ") ? error.message : `Línea ${lineNumber}: ${error.message}`);
     }
@@ -138,16 +175,16 @@ function processFile(contents, selectedFormat = "auto") {
     for (const record of group.slice(1)) {
       let next;
       do {
-        if (candidate >= 10n ** BigInt(format.receiptWidth)) {
+        if (candidate >= 10n ** BigInt(group[0].duplicateWidth)) {
           throw new Error(`No quedan números disponibles para renumerar comprobantes de ${record.cuit}.`);
         }
-        next = candidate.toString().padStart(format.duplicateWidth, "0");
+        next = candidate.toString().padStart(record.duplicateWidth, "0");
         candidate += 1n;
       } while (used.has(next));
 
-      const start = format.duplicateStart;
-      replacements.push({ offset: record.sourceOffset + start, value: next, width: format.duplicateWidth });
-      record.line = record.line.slice(0, start) + next + record.line.slice(start + format.duplicateWidth);
+      const start = record.duplicateStart;
+      replacements.push({ offset: record.sourceOffset + start, value: next, width: record.duplicateWidth });
+      record.line = record.line.slice(0, start) + next + record.line.slice(start + record.duplicateWidth);
       record.duplicateValue = next;
       used.add(next);
       correctedCount += 1;
