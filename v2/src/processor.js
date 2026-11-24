@@ -40,8 +40,8 @@ const FORMATS = {
 function parseCents(field, lineNumber, allowNegative = false) {
   const amount = field.trim();
   const match = allowNegative
-    ? amount.match(/^(-?)(\\d+),(\\d{2})$/)
-    : amount.match(/^(\\d+),(\\d{2})$/);
+    ? amount.match(/^(-?)(\d+),(\d{2})$/)
+    : amount.match(/^(\d+),(\d{2})$/);
   if (!match) {
     throw new Error(`Línea ${lineNumber}: el importe debe terminar en coma y dos decimales.`);
   }
