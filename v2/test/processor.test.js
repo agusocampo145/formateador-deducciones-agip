@@ -141,9 +141,9 @@ test("detects ARBA retentions, totals the final amount and preserves nonzero ide
 
 test("reads negative ARBA perception adjustments and preserves their source text", () => {
   const prefix = "0290230-71411283-617/10/2026";
-  const first = \`\${prefix}\${"0".repeat(24)}1CA-00000000802,26\`;
-  const second = \`\${prefix}\${"0".repeat(24)}2CA-00000022349,35\`;
-  const sample = \`\${first}\r\n\${second}\r\n\`;
+  const first = prefix + "0".repeat(24) + "1CA-00000000802,26";
+  const second = prefix + "0".repeat(24) + "2CA-00000022349,35";
+  const sample = first + "\r\n" + second + "\r\n";
 
   const result = processFile(sample);
 
