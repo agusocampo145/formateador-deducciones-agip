@@ -37,15 +37,20 @@ const FORMATS = {
   },
 };
 
-function parseCents(field, lineNumber) {
+function parseCents(field, lineNumber, allowNegative = false) {
   const amount = field.trim();
-  const match = amount.match(/^(\d+),(\d{2})$/);
+  const match = allowNegative
+    ? amount.match(/^(-?)(\\d+),(\\d{2})$/)
+    : amount.match(/^(\\d+),(\\d{2})$/);
   if (!match) {
     throw new Error(`Línea ${lineNumber}: el importe debe terminar en coma y dos decimales.`);
   }
-  return BigInt(match[1]) * 100n + BigInt(match[2]);
+  const negative = allowNegative && match[1] === "-";
+  const whole = allowNegative ? match[2] : match[1];
+  const fraction = allowNegative ? match[3] : match[2];
+  const cents = BigInt(whole) * 100n + BigInt(fraction);
+  return negative ? -cents : cents;
 }
-
 function validDate(value) {
   const match = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
   if (!match) return false;
@@ -135,8 +140,8 @@ function processFile(contents, selectedFormat = "auto") {
       if (format.family === "arba") {
         const amountWidth = 15;
         const amount = line.slice(-amountWidth);
-        if (!/^\d+,\d{2}$/.test(amount)) throw new Error(`Línea ${lineNumber}: el importe ARBA debe ocupar ${amountWidth} caracteres y terminar en coma y dos decimales.`);
-        cents = parseCents(amount, lineNumber);
+        if (amount.length !== amountWidth || !/^-?\d+,\d{2}$/.test(amount)) throw new Error(`Línea ${lineNumber}: el importe ARBA debe ocupar ${amountWidth} caracteres y terminar en coma y dos decimales.`);
+        cents = parseCents(amount, lineNumber, true);
       } else {
         cents = parseCents(line.slice(format.amountStart, format.amountStart + format.amountWidth), lineNumber);
       }
