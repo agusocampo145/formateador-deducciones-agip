@@ -44,6 +44,23 @@ La aplicación resuelve este problema de forma automática, rápida y sin necesi
 
 ---
 
+## 📝 Registro de cambios
+
+### 2026 — Emprolijando
+
+Se incorpora la aplicación estática de la carpeta `v2/`, pensada para preparar archivos TXT de retenciones y percepciones de AGIP y ARBA.
+
+- Procesa los TXT descargados desde los organismos, detecta el formato y muestra el tipo de archivo, la cantidad de registros, el total y una vista previa.
+- Detecta identificadores en cero repetidos y los renumera cuando corresponde. En los archivos de AGIP controla el número de certificado o comprobante; en los de ARBA, el identificador previo al tipo de comprobante.
+- Calcula los totales en centavos para evitar errores de redondeo. En percepciones de ARBA también interpreta los ajustes con importes negativos.
+- Conserva el contenido original, incluidos los saltos de línea, las líneas vacías y el salto final. Solo modifica el campo del identificador cuando necesita corregirlo.
+- Mantiene el archivo en el navegador: no se envía a un servidor. La descarga conserva el formato del organismo de origen.
+- Renueva la interfaz y la marca como **Emprolijando**, con soporte conjunto para AGIP y ARBA.
+
+La aplicación se encuentra en [`v2/`](./v2/README.md). Para ejecutarla y consultar los formatos soportados, ver su README.
+
+---
+
 ## 💬 Autor  
 
 Desarrollado por **Agustín Ocampo** 🐼  
